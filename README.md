@@ -1,295 +1,235 @@
 <div align="center">
 
-# 🚗 Distracted Driver Detection — ResNet50 from Scratch
+# 🚗 Distracted Driver Detection Using Custom ResNet50
 
-[![Python](https://img.shields.io/badge/Python-3.7+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)](https://keras.io/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![Dataset](https://img.shields.io/badge/Dataset-State%20Farm%20%7C%20Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/c/state-farm-distracted-driver-detection)
-[![Classes](https://img.shields.io/badge/10%20Behavior%20Classes-orange?style=for-the-badge)]()
-[![License](https://img.shields.io/badge/License-MIT-1abc9c?style=for-the-badge)](../LICENSE.md)
+### Deep Learning | Computer Vision | TensorFlow | Keras
 
-> Classifies **10 distracted driving behaviors** from dashboard camera images using a **custom ResNet50 implementation built from scratch in Keras** — including manual `convolutional_block` and `identity_block` definitions, `glorot_uniform` initialization, and LOGO cross-validation strategy.
+![Python](https://img.shields.io/badge/Python-3.7+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)
+![Computer Vision](https://img.shields.io/badge/Computer-Vision-blue?style=for-the-badge)
+![Deep Learning](https://img.shields.io/badge/Deep-Learning-success?style=for-the-badge)
 
-[🔙 Back to Main Repository](https://github.com/shsarv/Machine-Learning-Projects)
+### Driver Behavior Classification using a Custom ResNet50 Architecture Built from Scratch
 
 </div>
 
 ---
 
-## ⚠️ Safety Context
+# 📌 Project Overview
 
-> Distracted driving causes thousands of road fatalities annually. Automated in-vehicle behavior classification from dashboard cameras is an active area of road safety AI research.
+Distracted driving is one of the major causes of road accidents worldwide. Detecting unsafe driver activities in real time can significantly improve road safety and assist intelligent transportation systems.
 
----
-
-## 📌 Table of Contents
-
-- [About the Project](#-about-the-project)
-- [How It Works](#-how-it-works)
-- [Dataset](#-dataset)
-- [Class Definitions](#-class-definitions)
-- [Model Architecture](#-model-architecture)
-- [Training Analysis & Challenges](#-training-analysis--challenges)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-- [Tech Stack](#-tech-stack)
-- [References](#-references)
+This project focuses on classifying dashboard camera images into **10 different driver behavior classes** using a **custom implementation of ResNet50** developed from scratch with the **Keras Functional API**. Instead of relying on pretrained models, the residual network architecture is manually constructed using custom residual blocks to better understand the internal working of deep residual learning.
 
 ---
 
-## 🔬 About the Project
+# 🎯 Project Objectives
 
-This project tackles the **State Farm Distracted Driver Detection** Kaggle challenge — classifying driver images into 10 behavior classes. What makes it distinctive is that **ResNet50 is implemented completely from scratch** using the Keras functional API, manually defining every bottleneck block and skip connection rather than using `tf.keras.applications`.
-
-The notebook also demonstrates handling real-world ML challenges: **high bias**, **high variance**, and the **LOGO (Leave-One-Group-Out) cross-validation** strategy needed because multiple images belong to the same driver — random splits would leak the same driver into both train and validation sets.
-
-**What this project covers:**
-- Manual `identity_block` and `convolutional_block` implementations in Keras
-- `resnets_utils` helper module for block definitions
-- Diagnosing and addressing underfitting (high bias) and overfitting (high variance)
-- LOGO cross-validation to prevent driver-level data leakage
+- Build a custom ResNet50 architecture from scratch.
+- Classify driver behavior into ten predefined categories.
+- Understand residual learning and skip connections.
+- Prevent data leakage using driver-wise validation.
+- Analyze model performance using bias and variance observations.
 
 ---
 
-## ⚙️ How It Works
+# 🚘 Driver Activity Classes
 
-```
-Dashboard Camera Image
-         │
-         ▼
-  Load + Preprocess
-  (Normalize pixel values / 255)
-         │
-         ▼
-  ResNet50 Forward Pass
-  (Custom Keras implementation)
-  ┌─────────────────────────────────┐
-  │ ZeroPadding2D (3,3)             │
-  │ Conv2D(64,7×7,s=2) → BN → ReLU │
-  │ MaxPool(3×3, s=2)               │
-  │ Stage 2: ConvBlock + IdBlock×2  │
-  │ Stage 3: ConvBlock + IdBlock×3  │
-  │ Stage 4: ConvBlock + IdBlock×5  │
-  │ Stage 5: ConvBlock + IdBlock×2  │
-  │ AveragePooling2D(2×2)           │
-  │ Flatten → Dense(10, softmax)    │
-  └─────────────────────────────────┘
-         │
-         ▼
-  10-Class Softmax Output → c0–c9
-```
+| Class | Driver Activity |
+|--------|-----------------|
+| c0 | Safe Driving |
+| c1 | Texting (Right Hand) |
+| c2 | Talking on Phone (Right Hand) |
+| c3 | Texting (Left Hand) |
+| c4 | Talking on Phone (Left Hand) |
+| c5 | Operating Radio |
+| c6 | Drinking |
+| c7 | Reaching Behind |
+| c8 | Hair and Makeup |
+| c9 | Talking to Passenger |
 
 ---
 
-## 📊 Dataset
+# 📊 Dataset Information
 
 | Property | Details |
-|----------|---------|
-| **Name** | State Farm Distracted Driver Detection |
-| **Source** | [Kaggle Competition](https://www.kaggle.com/c/state-farm-distracted-driver-detection) |
-| **Training Images** | 22,424 |
-| **Classes** | 10 driving behaviors |
-| **Input Shape** | Resized to `64 × 64 × 3` for training |
-| **Metadata** | `driver_imgs_list.csv` — subject ID, classname, filename |
-| **Key Challenge** | Multiple images per driver → LOGO cross-validation required |
+|-----------|---------|
+| Dataset | State Farm Distracted Driver Detection |
+| Source | Kaggle |
+| Training Images | 22,424 |
+| Number of Classes | 10 |
+| Image Size | 64 × 64 × 3 |
+| Validation Strategy | Leave-One-Group-Out (LOGO) |
+
+The dataset contains multiple images captured from the same drivers. To avoid information leakage between training and validation sets, **Leave-One-Group-Out (LOGO)** cross-validation is adopted using the driver ID.
 
 ---
 
-## 🚦 Class Definitions
+# 🧠 Model Architecture
 
-| Code | Behavior |
-|:----:|----------|
-| **c0** | ✅ Safe Driving |
-| **c1** | 📱 Texting — Right Hand |
-| **c2** | 📞 Phone Call — Right Hand |
-| **c3** | 📱 Texting — Left Hand |
-| **c4** | 📞 Phone Call — Left Hand |
-| **c5** | 🎵 Operating Radio |
-| **c6** | 🥤 Drinking |
-| **c7** | 🔙 Reaching Behind |
-| **c8** | 💄 Hair / Makeup |
-| **c9** | 💬 Talking to Passenger |
+The project implements **ResNet50 manually** using the Keras Functional API.
 
----
+The network consists of:
 
-## 🏗️ Model Architecture
+- Zero Padding
+- Initial Convolution Layer
+- Batch Normalization
+- ReLU Activation
+- Max Pooling
+- Residual Learning Blocks
+  - Identity Blocks
+  - Convolutional Blocks
+- Average Pooling
+- Fully Connected Softmax Output Layer
 
-The notebook defines **ResNet50 from scratch** — no pretrained weights, no `tf.keras.applications`:
-
-```python
-from keras.layers import (Input, Add, Dense, Activation, ZeroPadding2D,
-    BatchNormalization, Flatten, Conv2D, AveragePooling2D, MaxPooling2D)
-from keras.models import Model
-from keras.initializers import glorot_uniform
-from resnets_utils import *
-
-def ResNet50(input_shape=(64, 64, 3), classes=10, init=glorot_uniform(seed=0)):
-    """
-    CONV2D -> BATCHNORM -> RELU -> MAXPOOL
-    -> CONVBLOCK -> IDBLOCK*2
-    -> CONVBLOCK -> IDBLOCK*3
-    -> CONVBLOCK -> IDBLOCK*5
-    -> CONVBLOCK -> IDBLOCK*2
-    -> AVGPOOL -> TOPLAYER
-    """
-```
-
-**Block types:**
-
-| Block | Shape Change | Used When |
-|-------|-------------|-----------|
-| **Identity Block** | Input = Output shape | Deepening without dimension change |
-| **Convolutional Block** | Input ≠ Output shape | When stride changes or filter count increases |
-
-**Stage filter configurations:**
-
-| Stage | Filters | Blocks |
-|-------|---------|--------|
-| Stage 2 | [64, 64, 256] | ConvBlock + IdBlock × 2 |
-| Stage 3 | [128, 128, 512] | ConvBlock + IdBlock × 3 |
-| Stage 4 | [256, 256, 1024] | ConvBlock + IdBlock × 5 |
-| Stage 5 | [512, 512, 2048] | ConvBlock + IdBlock × 2 |
-
-**Training config:**
-
-| Parameter | Value |
-|-----------|-------|
-| Initializer | `glorot_uniform(seed=0)` |
-| Optimizer | Adam |
-| Loss | Categorical Cross-Entropy |
-| Input Shape | `(64, 64, 3)` |
-| Output | Dense(10, softmax) |
+Unlike transfer learning approaches, this implementation builds every residual block explicitly without using pretrained ResNet models.
 
 ---
 
-## 📉 Training Analysis & Challenges
+# 🔄 Model Workflow
 
-The notebook provides honest, detailed bias-variance analysis across training runs — a key learning documented in the project:
-
-### Epoch 2 Results
-| Set | Accuracy |
-|-----|:--------:|
-| Train | ~26% |
-| Dev | ~13% |
-
-> High bias (underfitting) — model hasn't converged. High variance — large gap between train/dev.
-
-### Epoch 5 Results
-| Set | Accuracy |
-|-----|:--------:|
-| Train | **37.83%** |
-| Dev | **25.79%** |
-
-> Train accuracy improved but **underfitting persists** (~62% away from 100%). Variance increased dramatically (+80% gap between epochs 2→5). The notebook diagnoses this explicitly:
-
-```
-"We still have an underfitting problem (high bias, about 62.17% from 100%),
-however, our variance has increased dramatically between 2 and 5 epochs by about 80%."
-```
-
-### Prescribed fixes documented in the notebook:
-
-**To address High Bias (underfitting):**
-- Increase epoch count
-- Use a bigger/deeper network
-- Try different optimizers or learning rate schedules
-
-**To address High Variance (overfitting):**
-- Apply L2 regularization
-- Add dropout layers
-- Use data augmentation
-- Increase training data volume
-
-### LOGO Cross-Validation Note
-
-> Standard random train/val splits cause **data leakage** — the same driver's images appear in both sets, inflating dev accuracy. The notebook flags this and recommends **Leave-One-Group-Out (LOGO)** cross-validation, splitting by `subject` (driver ID) from `driver_imgs_list.csv`.
-
----
-
-## 📁 Project Structure
-
-```
-Distracted Driver Detection/
-│
-├── 📂 dataset/
-│   ├── train/                         # Training images, organized by class
-│   │   ├── c0/  c1/  c2/  ...  c9/
-│   └── test/                          # Unlabeled test images
-│
-├── driver_imgs_list.csv               # subject, classname, img columns
-├── resnets_utils.py                   # identity_block + convolutional_block helpers
-├── distracted_driver_detection.ipynb  # Main notebook
-├── requirements.txt                   # Python dependencies
-└── README.md                          # You are here
+```text
+Dashboard Image
+        │
+        ▼
+Image Preprocessing
+        │
+        ▼
+Pixel Normalization
+        │
+        ▼
+Custom ResNet50
+        │
+        ▼
+Residual Learning
+        │
+        ▼
+Feature Extraction
+        │
+        ▼
+Softmax Classification
+        │
+        ▼
+Predicted Driver Activity
 ```
 
 ---
 
-## 🚀 Getting Started
+# ⚙️ Key Components
 
-### 1. Clone the repository
+### Identity Block
 
-```bash
-git clone https://github.com/shsarv/Machine-Learning-Projects.git
-cd "Machine-Learning-Projects/Distracted Driver Detection"
-```
+- Preserves input dimensions
+- Enables deeper feature learning
+- Maintains skip connections
 
-### 2. Download the dataset from Kaggle
+### Convolutional Block
 
-```bash
-pip install kaggle
-kaggle competitions download -c state-farm-distracted-driver-detection
-unzip state-farm-distracted-driver-detection.zip -d dataset/
-```
-
-Or download manually from: [kaggle.com/c/state-farm-distracted-driver-detection/data](https://www.kaggle.com/c/state-farm-distracted-driver-detection/data)
-
-### 3. Set up environment
-
-```bash
-python -m venv venv
-source venv/bin/activate        # Linux / macOS
-venv\Scripts\activate           # Windows
-
-pip install -r requirements.txt
-```
-
-### 4. Run the notebook
-
-```bash
-jupyter notebook distracted_driver_detection.ipynb
-```
+- Changes feature map dimensions
+- Performs downsampling
+- Learns higher-level image features
 
 ---
 
-## 🛠️ Tech Stack
+# 📈 Training Observations
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Python 3.7+ |
-| Deep Learning | TensorFlow / Keras |
-| Model | ResNet50 (from scratch via Keras functional API) |
-| Utilities | `resnets_utils.py` (custom block helpers) |
-| Data | Pandas, NumPy |
+During experimentation, the model demonstrated several practical deep learning challenges.
+
+### Underfitting
+
+- Low training accuracy during initial epochs.
+- Indicates the model had not yet learned sufficient feature representations.
+
+### Overfitting
+
+- Difference between training and validation performance increased with additional epochs.
+- Suggested improvements include:
+  - Data augmentation
+  - Dropout
+  - L2 Regularization
+  - Additional training data
+  - Hyperparameter tuning
+
+These observations provide insight into practical model optimization techniques.
+
+---
+
+# 💻 Technologies Used
+
+| Category | Tools |
+|----------|------|
+| Programming Language | Python |
+| Deep Learning | TensorFlow |
+| Neural Network API | Keras |
+| Data Processing | NumPy, Pandas |
 | Visualization | Matplotlib |
-| Notebook | Jupyter / Google Colab |
+| Development Environment | Jupyter Notebook |
 
 ---
 
-## 📚 References
+# 📁 Repository Structure
 
-- [State Farm Distracted Driver Detection — Kaggle](https://www.kaggle.com/c/state-farm-distracted-driver-detection)
-- He, K., Zhang, X., Ren, S., & Sun, J. (2015). *Deep Residual Learning for Image Recognition.* [arXiv:1512.03385](https://arxiv.org/abs/1512.03385)
-- [deeplearning.ai — ResNet50 from scratch (Coursera)](https://www.coursera.org/learn/convolutional-neural-networks)
-- [Keras Functional API Documentation](https://keras.io/guides/functional_api/)
+```text
+Distracted Driver Detection
+│
+├── Distrated Driver detection.ipynb
+├── README.md
+└── supp
+    └── driver.gif
+```
+
+---
+
+# 🚀 Skills Demonstrated
+
+- Deep Learning
+- Computer Vision
+- CNN Architecture Design
+- ResNet50
+- TensorFlow
+- Keras Functional API
+- Residual Networks
+- Image Classification
+- Driver Behavior Analysis
+- Model Evaluation
+- Bias–Variance Analysis
+- Cross Validation
+
+---
+
+# 🌍 Real-World Applications
+
+- Driver Monitoring Systems
+- Intelligent Transportation Systems
+- Advanced Driver Assistance Systems (ADAS)
+- Road Safety Monitoring
+- Smart Vehicles
+- Autonomous Driving Research
+
+---
+
+# 🔮 Future Enhancements
+
+- Increase training epochs for improved convergence.
+- Apply transfer learning for performance comparison.
+- Integrate real-time webcam inference.
+- Deploy the model as a web application.
+- Optimize the model for edge devices.
+
+---
+
+# 👩‍💻 Author
+
+**Noya Falak**
+
+B.Tech – Electronics and Communication Engineering  
+Specialization: Generative AI
 
 ---
 
 <div align="center">
 
-Part of the [Machine Learning Projects](https://github.com/shsarv/Machine-Learning-Projects) collection by [Sarvesh Kumar Sharma](https://github.com/shsarv)
-
-⭐ Star the main repo if this helped you!
+⭐ If you found this project interesting, consider giving it a star.
 
 </div>
