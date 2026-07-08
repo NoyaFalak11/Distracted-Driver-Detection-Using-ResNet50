@@ -4,12 +4,6 @@
 
 ### Deep Learning | Computer Vision | TensorFlow | Keras
 
-![Python](https://img.shields.io/badge/Python-3.7+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
-![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)
-![Computer Vision](https://img.shields.io/badge/Computer-Vision-blue?style=for-the-badge)
-![Deep Learning](https://img.shields.io/badge/Deep-Learning-success?style=for-the-badge)
-
 ### Driver Behavior Classification using a Custom ResNet50 Architecture Built from Scratch
 
 </div>
